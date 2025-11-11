@@ -3,8 +3,9 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { MessageList } from '../MessageList/MessageList';
 import { Composer, ComposerRef } from '@/web/chat/components/Composer';
 import { ConversationHeader } from '../ConversationHeader/ConversationHeader';
+import { SwarmOrchestrationPanel } from '../SwarmOrchestration/SwarmOrchestrationPanel';
 import { api } from '../../services/api';
-import { useStreaming, useConversationMessages } from '../../hooks';
+import { useStreaming, useConversationMessages, useSwarmOrchestration } from '../../hooks';
 import type { ChatMessage, ConversationDetailsResponse, ConversationMessage, ConversationSummary } from '../../types';
 
 export function ConversationView() {
@@ -155,6 +156,9 @@ export function ConversationView() {
     },
   });
 
+  // Track swarm orchestration state
+  const swarmState = useSwarmOrchestration(messages);
+
   const handleSendMessage = async (message: string, workingDirectory?: string, model?: string, permissionMode?: string) => {
     if (!sessionId) return;
 
@@ -273,7 +277,7 @@ export function ConversationView() {
       />
       
       {error && (
-        <div 
+        <div
           className="bg-red-500/10 border-b border-red-500 text-red-600 dark:text-red-400 px-4 py-2 text-sm text-center animate-in slide-in-from-top duration-300"
           role="alert"
           aria-label="Error message"
@@ -282,7 +286,14 @@ export function ConversationView() {
         </div>
       )}
 
-      <MessageList 
+      {/* Swarm Orchestration Panel */}
+      {swarmState.isActive && (
+        <div className="px-4 pt-4">
+          <SwarmOrchestrationPanel swarmState={swarmState} />
+        </div>
+      )}
+
+      <MessageList
         messages={messages}
         toolResults={toolResults}
         childrenMessages={childrenMessages}
