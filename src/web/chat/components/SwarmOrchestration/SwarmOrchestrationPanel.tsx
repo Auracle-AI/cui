@@ -1,5 +1,6 @@
-import React from 'react';
-import { Users, Brain, Zap, Activity } from 'lucide-react';
+import React, { useState } from 'react';
+import { Users, Brain, Zap, Activity, ChevronDown, ChevronUp } from 'lucide-react';
+import { AgentCapabilitiesMatrix } from '../AgentCapabilities';
 
 export interface AgentInfo {
   id: string;
@@ -22,6 +23,8 @@ interface SwarmOrchestrationPanelProps {
 }
 
 export function SwarmOrchestrationPanel({ swarmState }: SwarmOrchestrationPanelProps) {
+  const [showCapabilities, setShowCapabilities] = useState(false);
+
   if (!swarmState.isActive) {
     return null;
   }
@@ -51,6 +54,32 @@ export function SwarmOrchestrationPanel({ swarmState }: SwarmOrchestrationPanelP
           <AgentCard key={agent.id} agent={agent} />
         ))}
       </div>
+
+      {/* Agent Capabilities Matrix - Expandable */}
+      {swarmState.agents.length > 0 && (
+        <div className="mt-4 border-t border-blue-500/20 pt-3">
+          <button
+            onClick={() => setShowCapabilities(!showCapabilities)}
+            className="flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors w-full"
+          >
+            {showCapabilities ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
+            <span>Agent Capabilities Matrix</span>
+            <span className="text-xs text-muted-foreground ml-auto">
+              ({swarmState.agents.length} agents)
+            </span>
+          </button>
+
+          {showCapabilities && (
+            <div className="mt-3 animate-in slide-in-from-top duration-200">
+              <AgentCapabilitiesMatrix agents={swarmState.agents} />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
