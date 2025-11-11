@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChatMessage } from '../types';
 import type { SwarmState, AgentInfo } from '../components/SwarmOrchestration/SwarmOrchestrationPanel';
-import type { ContentBlockParam } from '@anthropic-ai/sdk/resources/messages/messages';
 
 interface ToolUseBlock {
   type: 'tool_use';
